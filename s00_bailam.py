@@ -52,11 +52,30 @@ greeting('2100')             | Good evening!          | 14
 
 # def greetingTODO(hour_str): convert to 24h-format -> do greet
 
-def greeting_regex(hour_str):  #NOT WORKING  ref https://g.co/bard/share/b2a94837d088
-  import re
-  m = re.findall(r"^(0[0-9]|1[0-1|2])[:]?([0-5][0-9])?\s*(?:[AaPp][Mm])$", hour_str)
-  return m
-
+import re
 def greeting(hour_str):
-  pass#TODO
+  hour_str = hour_str.strip().lower()
+  hour = None
+  if 'am' in hour_str or 'pm' in hour_str:
+    time_match = re.match(r'(\d{1,2}):?(\d{2})? ?([ap]m)', hour_str)
+    if time_match:
+      hour = int(time_match.group(1))
+      period = time_match.group(3)
+      if period == 'am':
+        if hour == 12:
+          hour = 0
+      elif period == 'pm':
+        if hour != 12:
+          hour += 12
+  else:
+    if ':' in hour_str:
+      hour = int(hour_str.split(':')[0])
+    else:
+      hour = int(hour_str[:2])
+  if 5 <= int(hour) < 12:
+    return 'Good morning!'
+  elif 12 <= int(hour) < 18:
+    return 'Good afternoon!'
+  else:
+    return 'Good evening!'
 #endregion bailam
